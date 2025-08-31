@@ -1,0 +1,22 @@
+{
+	"name": "doubleedesign/classicpress-plugin-dependencies",
+	"version": "0.0.1",
+	"description": "Reads the 'requires plugins' headers in plugins and shows a warning if a dependency is missing.",
+	"type": "wordpress-plugin",
+	"authors": [
+		{
+			"name": "Leesa Ward",
+			"email": "leesa@doubleedesign.com.au"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"doubleedesign\\Classicpress\\PluginDependencies\\": "src/"
+		}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true,
+	"require-dev": {
+		"laravel/pint": "^1.24"
+	}
+}

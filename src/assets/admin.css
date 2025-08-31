@@ -1,0 +1,29 @@
+.wp-list-table.plugins .cp-plugin-requirements {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  vertical-align: top;
+  cursor: help;
+}
+.wp-list-table.plugins .cp-plugin-requirements .dashicons {
+  font-size: 1rem;
+  height: auto;
+  width: auto;
+  display: flex;
+  align-items: center;
+}
+.wp-list-table.plugins .cp-plugin-requirements .dashicons:before {
+  position: relative;
+  top: 2px;
+}
+.wp-list-table.plugins .cp-plugin-requirements--unmet {
+  color: #b32d2e;
+}
+.wp-list-table.plugins .tippy-content {
+  font-size: 0.8rem;
+}
+.wp-list-table.plugins .tippy-content strong {
+  text-wrap: nowrap;
+}
+
+/*# sourceMappingURL=admin.css.map */

@@ -1,0 +1,35 @@
+.wp-list-table.plugins {
+
+	.cp-plugin-requirements {
+		display: inline-flex;
+		gap: 2px;
+		align-items: center;
+		vertical-align: top;
+		cursor: help;
+
+		.dashicons {
+			font-size: 1rem;
+			height: auto;
+			width: auto;
+			display: flex;
+			align-items: center;
+
+			&:before {
+				position: relative;
+				top: 2px;
+			}
+		}
+
+		&--unmet {
+			color: #b32d2e;
+		}
+	}
+
+	.tippy-content {
+		font-size: 0.8rem;
+
+		strong {
+			text-wrap: nowrap;
+		}
+	}
+}
