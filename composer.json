@@ -1,7 +1,7 @@
 {
 	"name": "doubleedesign/classicpress-plugin-dependencies",
-	"version": "0.0.1",
-	"description": "Reads the 'requires plugins' headers in plugins and shows a warning if a dependency is missing.",
+	"version": "0.0.2",
+	"description": "Reads the 'requires plugins' and 'recommends plugins' headers in plugins and shows warnings and/or notes in the admin accordingly.",
 	"type": "wordpress-plugin",
 	"authors": [
 		{

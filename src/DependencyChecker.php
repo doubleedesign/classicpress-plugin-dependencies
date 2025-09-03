@@ -5,6 +5,8 @@ namespace Doubleedesign\ClassicPress\PluginDependencies;
 class DependencyChecker {
     private array $all_requirements = [];
     private array $unmet_requirements = [];
+	private array $all_recommendations = [];
+	private array $unmet_recommendations = [];
 
     public function __construct() {
         add_filter('extra_plugin_headers', [$this, 'register_header']);
@@ -15,6 +17,7 @@ class DependencyChecker {
 
     public function register_header($headers) {
         $headers[] = 'Requires plugins';
+		$headers[] = 'Recommends plugins';
 
         return $headers;
     }
@@ -32,6 +35,16 @@ class DependencyChecker {
                     }
                 }
             }
+
+			if (!empty($plugin_data['Recommends plugins'])) {
+				$recommended_plugins = array_map('trim', explode(',', $plugin_data['Recommends plugins']));
+				foreach($recommended_plugins as $recommended_plugin) {
+					$this->all_recommendations[$plugin_file][] = $recommended_plugin;
+					if(!$this->is_plugin_active($recommended_plugin)) {
+						$this->unmet_recommendations[$plugin_file][] = $recommended_plugin;
+					}
+				}
+			}
         }
     }
 
@@ -44,6 +57,15 @@ class DependencyChecker {
                 }
             }
         }
+
+		if (!empty($this->unmet_recommendations)) {
+			foreach (array_keys($this->unmet_recommendations) as $plugin_file) {
+				$message = $this->get_recommendations_info_text($plugin_file);
+				if ($message) {
+					wp_admin_notice($message, ['type' => 'info']);
+				}
+			}
+		}
     }
 
     public function add_plugin_row_meta($plugin_meta, $plugin_file, $plugin_data, $status) {
@@ -96,17 +118,41 @@ class DependencyChecker {
     }
 
     protected function get_info_text($plugin_file): ?string {
-        $requirements = $this->all_requirements[$plugin_file] ?? [];
-        if (empty($requirements)) {
-            return null;
-        }
+        $requirements = "<p>{$this->get_requirements_info_text($plugin_file)}</p>" ?? '';
+		$recommendations = "<p>{$this->get_recommendations_info_text($plugin_file)}</p>" ?? '';
 
-        $plugin_name = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin_file, false, false)['Name'] ?? $plugin_file;
-
-        return sprintf(
-            'The plugin <strong>%s</strong> requires the following plugins to be installed and activated: <strong>%s</strong>.',
-            $plugin_name,
-            implode(', ', $requirements)
-        );
+		return $requirements . $recommendations;
     }
+
+	protected function get_requirements_info_text($plugin_file): ?string {
+		$requirements = $this->all_requirements[$plugin_file] ?? [];
+		if (empty($requirements)) {
+			return null;
+		}
+
+		$plugin_name = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin_file, false, false)['Name'] ?? $plugin_file;
+
+		return sprintf(
+			'The plugin <strong>%s</strong> requires the following plugins to be installed and activated: <strong>%s</strong>. Without %s, this plugin may not function correctly and could trigger fatal errors.',
+			$plugin_name,
+			implode(', ', $requirements),
+			count($requirements) === 1 ? 'it' : 'them'
+		);
+	}
+
+	protected function get_recommendations_info_text($plugin_file): ?string {
+		$recommendations = $this->all_recommendations[$plugin_file] ?? [];
+		if (empty($recommendations)) {
+			return null;
+		}
+
+		$plugin_name = get_plugin_data(WP_PLUGIN_DIR . '/' . $plugin_file, false, false)['Name'] ?? $plugin_file;
+
+		return sprintf(
+			'The plugin <strong>%s</strong> recommends the following plugins: <strong>%s</strong>. Installing and activating %s will enable enhanced functionality.',
+			$plugin_name,
+			implode(', ', $recommendations),
+			count($recommendations) === 1 ? 'this plugin' : 'these plugins'
+		);
+	}
 }
